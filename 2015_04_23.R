@@ -3,20 +3,26 @@
 setwd("J:/R")
 prData <- read.csv("pr_hs_201314bg3.csv")
 
-selectSchools <- function(varname, threshold) {
+selectSchools <- function(varname, threshold, network = "all") {
     colNum <- which(colnames(prData)==varname)
-    subset <- prData[which( prData[,colNum] > threshold ) ,]
+    subset <- if (network == "nv") {
+        prData[which( prData[,colNum] > threshold & prData$nv == "Yes") ,]
+    } else if (network == "nonnv") {
+        prData[which( prData[,colNum] > threshold & prData$nv == "No") ,]
+    } else if (network == "all") {
+        prData[which( prData[,colNum] > threshold) ,]
+    }
     nr <- nrow(subset)
-    for (i in 1:nr){
-        temp <- c(list(as.character(subset[i, 3]), subset[i,colNum]))
-        if (!exists("schools")){
-            schools <- temp
+    for (i in 1:nr) {
+        temp <- c(list(as.character(subset[i, 'school']), subset[i,colNum], as.character(subset[i,'nv'])))
+        schools <- if (!exists("schools")) {
+            temp
         } else {
-            schools <- rbind(schools, temp)
+            rbind(schools, temp)
         }
     }
     df <- data.frame(schools, row.names=1)
-    colnames(df) = make.names(varname,TRUE)
+    colnames(df) = make.names(c(varname,"NV"),TRUE)
     df
 }
 
@@ -33,7 +39,7 @@ selectSchools <- function(varname, threshold) {
 
 ################################################################################
 
-# TASK 2: Programming Assignment
+# TASK 2: Coursera Programming Assignment
 
 setwd("specdata")
 file1 <- read.csv("010.csv")
