@@ -21,11 +21,11 @@ selectSchools <- function(varname, threshold) {
 }
 
 # DISCUSSION QUESTIONS
-# if you're not sure what "colnames" (line 5) does, how can you find out?
-# what's with the lonely commas in line 7?
-# how many times will this loop in line 8 run?
-# what does the test on line 10 do?
-# bonus: why do we assign only one column name (line 17)? hint: see line 16
+# if you're not sure what "colnames" (line 7) does, how can you find out?
+# what's with the lonely commas in line 9?
+# how many times will this loop in line 10 run?
+# what does the test on line 12 do?
+# bonus: why do we assign only one column name instead of two (line 19)? hint: see line 18
 
 # USEFUL FUNCTIONS/CONCEPTS
 # which: eqiuvalent to Stata's "if"
