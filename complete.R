@@ -16,6 +16,6 @@ complete <- function(directory, id = 1:332) {
         }
     }
     df <- data.frame(results, row.names = NULL)
-    colnames(df) = make.names(c("id","nobs"), TRUE)
+    colnames(df) <- make.names(c("id","nobs"), TRUE)
     df
 }
