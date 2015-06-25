@@ -11,19 +11,29 @@ VAR <- substr(data.urls,startchar,stopchar)
 
 library(httr)
 
+data <- vector()
 for (i in VAR){
-    tempi <- URLencode(i)
-    tempurl <- paste0("https://mail.nycboe.net/owa/?ae=Item&a=Open&t=AD.RecipientType.User&id=",tempi,"%3d%3d","&pspid=_1435159383854_73335102")
-    tempdat <- GET(tempurl,authenticate("bgunton","jul2015!"))
-    page <- htmlTreeParse(tempdat, useInternal=T)
+    tempi <- paste0("https://mail.nycboe.net/owa/?ae=Item&a=Open&t=AD.RecipientType.User&id=",i,"%3d%3d","&pspid=_1435159383854_73335102")
+    tempurl <- URLencode(tempi)
+    temppage <- htmlTreeParse(tempurl, useInternal=T)
+    tempdata = unlist(xpathApply(temppage,"//div[@class='fld']",xmlValue))
+    data <- rbind(data,tempdata)
 }
-
 # i <- VAR[100]
-setInternet2(use = TRUE)
-tempurl2 <- paste0("http://","bgunton",":","jul2015!","@","mail.nycboe.net/owa/?ae=Item&a=Open&t=AD.RecipientType.User&id=",tempi,"%3d%3d","&pspid=_1435159383854_73335102")
-page <- htmlTreeParse(tempurl2, useInternal=T)
-handle <- handle(tempurl)
-login <- list(username='bgunton', password  = 'jul2015!')
-response <- POST(handle = handle, body = login)
 
+## Following this example: http://stackoverflow.com/questions/24723606/scrape-password-protected-website-in-r
+handle <- handle("https://mail.nycboe.net/")
+path <- "owa/auth.owa"
+login <- list(
+    username = "#"
+    ,password = "#"
+    ,destination = "https://mail.nycboe.net/owa/auth.owa"
+)
+response <- POST(handle = handle, path = path, body = login)
+page <- htmlTreeParse(response, useInternal=T)
+page
 
+## Following the documentation:
+response <- POST("https://mail.nycboe.net/owa/auth.owa", authenticate("#","#"), encode = "form", verbose())
+page <- htmlTreeParse(response, useInternal=T)
+page
